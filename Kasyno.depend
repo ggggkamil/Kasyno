@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1647467996 source:g:\studia\informatyka studia 2021\semestr 2\podstawy programowania\kasyno\main.cpp
+	<iostream>
+	<windows.h>
+	<time.h>
+	<stdio.h>
+	<cstdlib>
+	<conio.h>
+	<unistd.h>
+	<locale.h>
+
