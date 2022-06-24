@@ -6,36 +6,46 @@
 #include <conio.h>
 #include <unistd.h>
 #include <locale.h>
-
+#include <fstream>
 
 using namespace std;
 
-char wybor;
+int wybor;
+
 void opcja1() //Do dodania tablica z porównaniami cyfr podanych i losowanych;  kasa;
 {
 
-    int liczba;
-    char cyfry[4];
+    int liczba[6],trafionych;
+    char cyfry[6];
     cout << "Witaj w losowaniu! Podaj swoje 6 liczb." << endl;
-    //6 cyfr nie jedna
-    cin>> cyfry;
+    for(int i=0;i<6;i++)
+    {
+
+
+        cout<<"Podaj swoja "<<i+1<<" liczbe:";
+        cin>>cyfry[i];
+    }
+
     cout <<" Za 3 sek nastapi zwolnienie blokady" << endl;
     Sleep(3000);
     cout<<endl;
     srand(time(NULL));
-    for (int i=1; i<=6; i++)
+    for (int j=0; j<=5; j++)
     {
-    liczba = rand()%49+1;
+     liczba[j]= rand()%49+1;
     Sleep(1000);
-    cout<<liczba<<endl;
+    cout<<liczba[j]<<endl;
     }
-    //Dodaj porównanie cyfr z losowania z tymi z tabeli cyfry
-    //if(cyfry==liczba)
-    cout<<cyfry;
+        for (int b=0; b<=5; b++)
+    {
+        if(liczba[b]==cyfry[b])
+            trafionych++;
+    }
+    cout<<"Trafiles "<<trafionych<<" liczb!";
 }
-void opcja2(int &kasa) //wyłącznik (t/n) nie dziala,
+void opcja2(int &kasa)
 {
-    cout<<kasa;
+
      cout << "\n\n";
       cout<<"\n\n";
     cout << "\t\tZasady gry\n";
@@ -66,14 +76,14 @@ void opcja2(int &kasa) //wyłącznik (t/n) nie dziala,
     int wybranaliczba;
 
 
-    cout<<"Witaj, podaj numer ktory obstawiasz"<<endl;
+    cout<<"Podaj numer ktory obstawiasz"<<endl;
     cin>>wybranaliczba;
 
       srand( time( NULL));
     int ruletka=rand()%36+1;
     if(ruletka==wybranaliczba)
     {
-        cout << "Gratulacje! Wygrałeś "<<ileZaklad*10<<" !!"<<endl;
+        cout << "Gratulacje! Wygrales "<<ileZaklad*10<<" !!"<<endl;
         kasa+=ileZaklad*10;
     }
     else if(ruletka!=wybranaliczba)
@@ -85,7 +95,6 @@ void opcja2(int &kasa) //wyłącznik (t/n) nie dziala,
     cin>>czydalej;
     }while (czydalej=='t' || czydalej=='T' && kasa!=0);
 }
-
 void opcja3(int &kasa) //WYGRANA,porównanie trzech symboli
 {
     char wajcha;
@@ -99,10 +108,8 @@ void opcja3(int &kasa) //WYGRANA,porównanie trzech symboli
     cin>>wajcha;
 
 usleep(300000);
-int poczatekgry();
-int liczba=0;
 
-while(wajcha== 't'){
+while(wajcha== 't' && kasa>0){
     int liczba=0;
     cout << "Ciagniesz za wajche... " << endl;
     usleep(50000);
@@ -125,19 +132,16 @@ while(wajcha== 't'){
         cout << "\t\t ~ ";
     else if (runda == 8)
         cout << "\t\t @ ";
-    else
+    else if (runda == 9)
         cout << "\t\t ! ";
     liczba++;
-
     }
-    kasa-=5;
-
+        kasa-=5;
     cout << "\n\nChcesz pograc jeszcze raz? (t/n) Masz:"<<kasa<<endl;
     cin>>wajcha;
  }
-return;
 }
-void opcja4(int &kasa)
+void opcja4(int &kasa) //jaka wygrana, dodaj do kasy.
 {
     cout << "\n\n";
     cout << "\t\tZasady gry\n";
@@ -176,18 +180,22 @@ bool smierc = false;
 }
 void opcja5(int &kasa)
 {
-  int talia[4][14],IleZaklad, ktoraKarta,loskolor,losfigura,wagaKarty,sumaWagiKart=0,wagaKarty_pc,sumaWagiKart_pc;
-  cout << "\t\nMasz "<< kasa <<"PLN\n\t";
+  int talia[4][14],IleZaklad, ktoraKarta,loskolor,losfigura,wagaKarty,sumaWagiKart,wagaKarty_pc,sumaWagiKart_pc;
+    cout << "\n\n";
+    cout << "\t\tZasady gry\n";
+    cout<<"\n\n";
+    cout << "\t1. Losujesz karte z talii. \n";
+    cout << "\t2. Kazda karta ma swoja wage. Jezeli suma wag kart przekroczy 21 przegrywasz. \n";
+    cout << "\t3. Wygrywasz dwukrotnosc stawki jesli masz wiecej punktow niz krupier. \n";
+  cout << "\nMasz "<< kasa <<"PLN\n";
   cout << "Ile stawiasz : ";
   cin >>IleZaklad;
   char czydalej;
-char const * const kolor[4]={"kier","piik","trefl","karo"};
+char const * const kolor[4]={"kier","pik","trefl","karo"};
 char const * const figura[13]={"Dwojka", "Trojka", "Czworka", "Piatka", "Szostka", "Siodemka", "Osemka", "Dziewiatka", "Dziesiatka", "Walet", "Dama", "Krol","As"};
 int const punktacja[14]={2,3,4,5,6,7,8,9,10,11};
 do{
-
-do
-  {
+do{
     loskolor=rand()%4;
     losfigura=rand()%14;
   }while (talia[loskolor][losfigura]==0);
@@ -206,13 +214,21 @@ do
   cout<<figura[losfigura];
   cout<<" "<<kolor[loskolor]<<" waga: "<<wagaKarty<<endl;
   sumaWagiKart+=wagaKarty;
-  cout<<"Masz w kartach: "<<sumaWagiKart<<endl;
+  cout<<"Masz w kartach: "<<sumaWagiKart<<" punkty."<<endl;
+  if(sumaWagiKart>21)
+  {
+      cout<<"Przelicytowales. Wygral krupier."<<endl;
+      czydalej=='n';
+      kasa-=IleZaklad;
+  }
+  else
+  {
   cout<<"Ciagniesz kolejna karte? (t/n): ";
   cin>>czydalej;
-  }while (czydalej=='t' || czydalej=='T' && sumaWagiKart>21 && kasa!=0);
+  }
+  }while(sumaWagiKart<21 && czydalej=='t');
+do{
   do{
-    do
-  {
     loskolor=rand()%4;
     losfigura=rand()%14;
   }while (talia[loskolor][losfigura]==0);
@@ -228,33 +244,39 @@ do
   else if(losfigura=12) //as
     wagaKarty_pc=11;
     sumaWagiKart_pc+=wagaKarty_pc;
-  }while (sumaWagiKart_pc<=17 && sumaWagiKart_pc<21 );
+}while (sumaWagiKart_pc<16);
   cout<<"Suma kart krupiera: "<<sumaWagiKart_pc<<endl;
 
-  if(sumaWagiKart>sumaWagiKart_pc)
+  if(sumaWagiKart>sumaWagiKart_pc && sumaWagiKart<=21)
+  {
     cout<<"Wygrales! Gratulacje.";
+  kasa+=IleZaklad*2;
+  }
   else if(sumaWagiKart==sumaWagiKart_pc)
     cout<<"Remis.";
   else if(sumaWagiKart<sumaWagiKart_pc)
-    cout<<"Krupier wygral.";
+  {
+      cout<<"Krupier wygral.";
+      kasa-=IleZaklad;
+  }
 
 }
-
-
-
-
 int main(){
-    int kasa;
+    int kasa,koniec=0;
     int const minimalnyzaklad= 20;
     int const maskymalnyzaklad=200;
+    string imie;
+
 
     srand(time(NULL));
     kasa = rand()%(maskymalnyzaklad-minimalnyzaklad)+minimalnyzaklad;
 
- 	cout<<"Witaj w krainie gdzie kazdy obcy ginie\n";
+ 	cout<<"\tWitaj w kasynie!\n";
 
-
-
+    cout<<"Jak masz na imie?"<<endl;
+    cin>>imie;
+    while(koniec!=1 && kasa>0)
+    {
     cout << "\t\nMasz "<< kasa <<"PLN\n\t";
     cout<<endl;
     cout<< "W co chcesz zagrac?"<<endl;
@@ -263,9 +285,13 @@ int main(){
     cout<< "2. Ruletka"<<endl;
     cout<< "3. Jednoreki bandyta"<<endl;
     cout<< "4. Rosyjska ruletka"<<endl;
-    cout<< "5. Karty"<<endl;
+    cout<< "5. Gra w oczko"<<endl;
     cout<< "6. Koniec programu"<<endl;
     cout<< "Wybierz: "<<endl;
+
+
+
+
   wybor=getch();
     switch(wybor)
     {
@@ -280,13 +306,23 @@ int main(){
      case '5':opcja5(kasa);
         break;
     case '6':
-        exit(0);
+        koniec=1;
         break;
     default: cout<<"Nie ma takiej opcji!";
     }
     getchar();getchar();
     system("cls");
 
+    }
+    if(kasa==0)
+    cout<<"Koniec gry. Nie masz juz pieniedzy.";
+    else
+        cout<<"Dziekuje za gre.Do widzenia.";
+    fstream plik;
+    plik.open("scores.txt",ios::out);
+    plik<<imie<<endl;
+    plik<<kasa<<endl;
+    plik.close();
     return 0;
     }
 
