@@ -12,12 +12,20 @@ using namespace std;
 
 int wybor;
 
-void opcja1() //Do dodania tablica z porównaniami cyfr podanych i losowanych;  kasa;
+void opcja1(int &kasa)
 {
 
-    int liczba[6],trafionych;
-    char cyfry[6];
-    cout << "Witaj w losowaniu! Podaj swoje 6 liczb." << endl;
+    int liczba[6],cyfry[6],trafionych;
+    char czydalej;
+     cout << "\n\n";
+      cout<<"\n\n";
+    cout << "\t\tZasady gry\n";
+       cout<<"\n\n";
+    cout << "\t1. Podaj swoje 6 liczb z przedzialu od 1 do 50.\n";
+    cout << "\t2. Przegrywasz losowanie jesli nie trafisz\n";
+    cout << "\t3. Kupon kosztuje 5PLN.\n\n";
+    do
+    {
     for(int i=0;i<6;i++)
     {
 
@@ -28,20 +36,34 @@ void opcja1() //Do dodania tablica z porównaniami cyfr podanych i losowanych;  
 
     cout <<" Za 3 sek nastapi zwolnienie blokady" << endl;
     Sleep(3000);
-    cout<<endl;
     srand(time(NULL));
     for (int j=0; j<=5; j++)
     {
-     liczba[j]= rand()%49+1;
-    Sleep(1000);
-    cout<<liczba[j]<<endl;
+
+        liczba[j]= rand()%49+1;
+            Sleep(1000);
+        cout<<liczba[j]<<endl;
     }
-        for (int b=0; b<=5; b++)
+    for (int b=0; b<=5; b++)
     {
-        if(liczba[b]==cyfry[b])
-            trafionych++;
+            if(cyfry[b]==liczba[b])
+            {
+                trafionych++;
+            }
     }
-    cout<<"Trafiles "<<trafionych<<" liczb!";
+    if(trafionych==6)
+    {
+        cout<<"Wygrales glowną nagrode! 1 000 000 000 PLN"<<endl;
+        kasa+=1000000000;
+    }
+    else
+    cout<<"Trafiles "<<trafionych<<" liczb!"<<endl;
+    kasa-=5;
+
+    cout<<"Chcesz grac dalej?Nacisnij (t/n)"<<endl;
+    cout << "Masz "<< kasa <<"PLN\n";
+    cin>>czydalej;
+    }while (czydalej=='t' && kasa>0);
 }
 void opcja2(int &kasa)
 {
@@ -98,6 +120,7 @@ void opcja2(int &kasa)
 void opcja3(int &kasa) //WYGRANA,porównanie trzech symboli
 {
     char wajcha;
+    int los[3],bank=0;
     cout << "\n\n";
     cout << "\t\tZasady gry\n";
     cout<<"\n\n";
@@ -109,39 +132,49 @@ void opcja3(int &kasa) //WYGRANA,porównanie trzech symboli
 
 usleep(300000);
 
-while(wajcha== 't' && kasa>0){
-    int liczba=0;
+while(wajcha== 't' && kasa>0 && bank!=1){
+    int  runda=0;
     cout << "Ciagniesz za wajche... " << endl;
     usleep(50000);
-    while (liczba < 3)
+    while(runda<3)
     {
-    int  runda=rand()% 9 + 1;
-    if (runda == 1)
+    los[runda]=rand()% 9 + 1;
+    if (los[runda] == 1)
         cout << "\t\t * ";
-    else if (runda == 2)
+    else if (los[runda] == 2)
         cout << "\t\t & ";
-    else if (runda == 3)
+    else if (los[runda] == 3)
         cout << "\t\t ^ ";
-    else if (runda == 4)
+    else if (los[runda] == 4)
         cout << "\t\t % ";
-    else if (runda == 5)
+    else if (los[runda] == 5)
         cout << "\t\t $ ";
-    else if (runda == 6)
+    else if (los[runda] == 6)
         cout << "\t\t # ";
-    else if (runda == 7)
+    else if (los[runda] == 7)
         cout << "\t\t ~ ";
-    else if (runda == 8)
+    else if (los[runda] == 8)
         cout << "\t\t @ ";
-    else if (runda == 9)
+    else if (los[runda] == 9)
         cout << "\t\t ! ";
-    liczba++;
+     else if (los[runda] == 0)
+        cout << "\t\t + ";
+        runda++;
     }
+
+    if((los[0]==5)&&(los[1]==5)&&(los[2]==5))
+    {
+        cout<<"\nROZBILES BANK!! Bierzesz wysztkie pieniadze z automatu."<<endl;
+        kasa+=rand()% 9000 + 10000;
+        bank=1;
+    }
+
         kasa-=5;
     cout << "\n\nChcesz pograc jeszcze raz? (t/n) Masz:"<<kasa<<endl;
     cin>>wajcha;
  }
 }
-void opcja4(int &kasa) //jaka wygrana, dodaj do kasy.
+void opcja4(int &kasa)
 {
     cout << "\n\n";
     cout << "\t\tZasady gry\n";
@@ -174,7 +207,7 @@ bool smierc = false;
         }
         kasa-=20;
     if(smierc==false){
-        cout << "Gratulacje, przezyles. Bierz kase ze stolu i spadaj." << endl;
+        cout << "Gratulacje, przezyles. Bierz kase od wszystkich i spadaj." << endl;
         kasa+=120;
     }
 }
@@ -295,7 +328,7 @@ int main(){
   wybor=getch();
     switch(wybor)
     {
-    case '1':opcja1();
+    case '1':opcja1(kasa);
         break;
     case '2':opcja2(kasa);
         break;
